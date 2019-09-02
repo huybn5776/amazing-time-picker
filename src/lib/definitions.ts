@@ -20,6 +20,7 @@ export interface TimePickerConfig {
   onlyMinute?: boolean;
   onlyAM?: boolean;
   onlyPM?: boolean;
+  closeWhenSelected?: boolean;
 }
 
 export interface RangeTime {
@@ -51,8 +52,11 @@ export interface IDisplayPreference {
     ok?: string;
     cancel?: string;
   };
+
   period?(period: 'AM' | 'PM');
+
   clockMinute?(minute: any);
+
   clockHour?(hour: any);
 }
 

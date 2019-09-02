@@ -28,6 +28,7 @@ export class AtpDirective implements ControlValueAccessor {
   @Input() onlyMinute: boolean;
   @Input() onlyAM: boolean;
   @Input() onlyPM: boolean;
+  @Input() closeWhenSelected: boolean;
 
   constructor(
     private readonly elementRef: ElementRef,
@@ -48,6 +49,7 @@ export class AtpDirective implements ControlValueAccessor {
       onlyMinute: this.onlyMinute,
       onlyAM: this.onlyAM,
       onlyPM: this.onlyPM,
+      closeWhenSelected: this.closeWhenSelected,
       preference: this.preference,
     };
     this.atp.open(config)

@@ -72,7 +72,9 @@ export class TimePickerComponent implements OnInit {
 
   onTimeSelect() {
     this.isClicked = false;
-    if (this.config.changeToMinutes && !this.config.onlyHour && this.clockType === 'hour') {
+    if (this.config.closeWhenSelected && (this.config.onlyHour || this.clockType === 'minute')) {
+      this.getTimeAndClose();
+    } else if (this.config.changeToMinutes && !this.config.onlyHour && this.clockType === 'hour') {
       this.changeAnimation('minute');
     }
   }
