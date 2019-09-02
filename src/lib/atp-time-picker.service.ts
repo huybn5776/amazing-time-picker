@@ -19,7 +19,7 @@ export class AmazingTimePickerService {
 
   open(pickerConfig?: TimePickerConfig): IDialogResult {
     const thems = ['light', 'dark', 'material-red', 'material-green', 'material-blue', 'material-purple', 'material-orange'];
-    let config = pickerConfig || {};
+    let config: TimePickerConfig = pickerConfig || {};
     config = {
       time: config.time || '00:00',
       theme: thems.indexOf(config.theme) > 0 ? config.theme : 'light' || config.theme || 'light',
@@ -49,10 +49,9 @@ export class AmazingTimePickerService {
     this.appRef.attachView(tsc.hostView);
     const domElem = (tsc.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
     document.body.appendChild(domElem);
-    tsc.instance.subject = new Subject<any>();
+    tsc.instance.valueChange = new Subject<string>();
     tsc.instance._ref = tsc;
     tsc.instance.appRef = this.appRef;
-    tsc.instance.timerElement = '';
     tsc.instance.config = config;
     if (config.preference) {
       tsc.instance.preference = config.preference;
@@ -62,7 +61,7 @@ export class AmazingTimePickerService {
     tsc.instance.ParseStringToTime(config.time);
     return {
       afterClose: function() {
-        return tsc.instance.subject.asObservable();
+        return tsc.instance.valueChange.asObservable();
       }
     };
   }

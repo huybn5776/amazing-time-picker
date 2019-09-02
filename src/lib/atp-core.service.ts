@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
+
 import { ITime } from './definitions';
+import { ClockObject } from './entity/clock-object';
 
 @Injectable()
 export class AtpCoreService {
 
   constructor() { }
 
-  public allowedTimes(min, max) {
+  public getAllowedTimes(min, max): string[] {
     const allTimes = [];
     const nowMinHour = +min.split(':')[0];
     const nowMaxHour = +max.split(':')[0];
@@ -30,8 +32,8 @@ export class AtpCoreService {
     return allTimes;
   }
 
-  public ClockMaker(type: 'minute' | 'hour'): any[] {
-    const items = [];
+  public clockMaker(type: 'minute' | 'hour'): ClockObject[] {
+    const items: ClockObject[] = [];
     const timeVal = (type === 'minute') ? 60 : 12;
     const timeStep = (type === 'minute') ? 5 : 1;
     const timeStart = (type === 'minute') ? 0 : 1;
@@ -55,7 +57,7 @@ export class AtpCoreService {
     return items;
   }
 
-  public TimeToString(time: ITime): string {
+  public timeToString(time: ITime): string {
     const {ampm, minute, hour} = time;
     let hh = ampm === 'PM' ? +hour + 12 : +hour;
     if (ampm === 'AM' && hh === 12) {
@@ -64,15 +66,15 @@ export class AtpCoreService {
     if (hh === 24) {
       hh = 12;
     }
-    hh = hh < 10 ? '0' + hh : '' + hh as any;
-    const mm = minute < 10 ? '0' + minute : minute;
-    return `${hh}:${mm}`;
+    const hhStr = hh.toString().padStart(2, '0');
+    const mmStr = minute.toString().padStart(2, '0');
+    return `${hhStr}:${mmStr}`;
   }
 
   /**
    * Converts 00:00 format to ITime object
    */
-  public StringToTime(time: string): ITime {
+  public stringToTime(time: string): ITime {
     const [h, m] = time.split(':');
     let hour = +h > 12 ? +h - 12 : +h;
     hour = hour === 0 ? 12 : hour;
@@ -85,15 +87,15 @@ export class AtpCoreService {
   /**
    * @experimental
    */
-  public CalcDegrees(ele: any, parrentPos: any, step: number): number {
+  public calcDegrees(event: MouseEvent, parentRect: ClientRect, step: number): number {
     const clock = {
-      width: ele.currentTarget.offsetWidth,
-      height: ele.currentTarget.offsetHeight
+      width: (<HTMLElement> event.currentTarget).offsetWidth,
+      height: (<HTMLElement> event.currentTarget).offsetHeight,
     };
     const targetX = clock.width / 2;
     const targetY = clock.height / 2;
-    const Vx = Math.round((ele.clientX - parrentPos.left) - targetX);
-    const Vy = Math.round(targetY - (ele.clientY - parrentPos.top));
+    const Vx = Math.round((event.clientX - parentRect.left) - targetX);
+    const Vy = Math.round(targetY - (event.clientY - parentRect.top));
     let radians = -Math.atan2(Vy, Vx);
     radians += 2.5 * Math.PI;
 
