@@ -29,6 +29,7 @@ export class AmazingTimePickerService {
       changeToMinutes: config.changeToMinutes,
       animation: (config.animation == null || config.animation === 'fade') ? 'fade' : (config.animation === 'rotate') ? 'rotate' : false,
       preference: config.preference || null,
+      minuteGap: Math.min(60, Math.max(1, config.minuteGap || 1)),
       onlyHour: config.onlyHour,
       onlyMinute: config.onlyMinute,
       onlyAM: config.onlyAM,

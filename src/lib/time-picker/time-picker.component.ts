@@ -80,7 +80,7 @@ export class TimePickerComponent implements OnInit {
   }
 
   getDegree(event: MouseEvent) {
-    const step = this.clockType === 'minute' ? 6 : 30;
+    const step = this.clockType === 'minute' ? 6 * this.config.minuteGap : 30;
     const parentRect = (<HTMLElement> event.currentTarget).getBoundingClientRect();
     if (this.isClicked && (event.currentTarget === event.target || (<HTMLElement> event.target).nodeName === 'BUTTON')) {
       const degrees = this.core.calcDegrees(event, parentRect, step);
@@ -91,7 +91,7 @@ export class TimePickerComponent implements OnInit {
         hour = (degrees / step);
         hour = (hour > 12) ? hour - 12 : hour;
       } else if (this.clockType === 'minute') {
-        minute = (degrees / step);
+        minute = (degrees / step) * this.config.minuteGap;
         minute = (minute > 59) ? minute - 60 : minute;
       }
 

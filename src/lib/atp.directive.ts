@@ -24,6 +24,7 @@ export class AtpDirective implements ControlValueAccessor {
   @Input() preference: IDisplayPreference;
   @Input() changeToMinutes: boolean;
   @Input() animation: 'fade' | 'rotate' | false;
+  @Input() minuteGap: number;
   @Input() onlyHour: boolean;
   @Input() onlyMinute: boolean;
   @Input() onlyAM: boolean;
@@ -45,6 +46,7 @@ export class AtpDirective implements ControlValueAccessor {
       locale: this.locale,
       changeToMinutes: this.changeToMinutes === undefined ? true : this.changeToMinutes,
       animation: this.animation,
+      minuteGap: this.minuteGap,
       onlyHour: this.onlyHour,
       onlyMinute: this.onlyMinute,
       onlyAM: this.onlyAM,

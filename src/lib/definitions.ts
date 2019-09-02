@@ -16,6 +16,7 @@ export interface TimePickerConfig {
   preference?: IDisplayPreference;
   changeToMinutes?: boolean;
   animation?: 'fade' | 'rotate' | false;
+  minuteGap?: number;
   onlyHour?: boolean;
   onlyMinute?: boolean;
   onlyAM?: boolean;
