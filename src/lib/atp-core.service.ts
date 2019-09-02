@@ -8,7 +8,7 @@ export class AtpCoreService {
 
   constructor() { }
 
-  public getAllowedTimes(min, max): string[] {
+  public getAllowedTimes(min: string, max: string): string[] {
     const allTimes = [];
     const nowMinHour = +min.split(':')[0];
     const nowMaxHour = +max.split(':')[0];

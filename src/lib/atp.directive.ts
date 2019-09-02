@@ -16,8 +16,8 @@ export class AtpDirective implements ControlValueAccessor {
 
   @Input() time: string;
   @Input() theme: 'dark' | 'light' | 'material-red' | 'material-green' | 'material-blue' | 'material-purple' | 'material-orange';
-  @Input() start: string;
-  @Input() end: string;
+  @Input() timeStart: string;
+  @Input() timeEnd: string;
   @Input() rangeTime: RangeTime;
   @Input() arrowStyle: Pallete;
   @Input() locale: string;
@@ -41,7 +41,7 @@ export class AtpDirective implements ControlValueAccessor {
     const config: TimePickerConfig = {
       time: this.time || this.elementRef.nativeElement.value,
       theme: this.theme,
-      rangeTime: this.rangeTime || {start: this.start, end: this.end},
+      rangeTime: this.rangeTime || {start: this.timeStart, end: this.timeEnd},
       arrowStyle: this.arrowStyle,
       locale: this.locale,
       changeToMinutes: this.changeToMinutes === undefined ? true : this.changeToMinutes,

@@ -104,7 +104,7 @@ export class TimePickerComponent implements OnInit {
       const nowMaxMin = +max.split(':')[1];
 
       const nowTime = this.getNowTime(hour, this.time.ampm, minute);
-      if (this.allowedTimes.indexOf(nowTime) > -1) {
+      if (this.allowedTimes.includes(nowTime)) {
         this.time.hour = hour;
         this.time.minute = minute;
         this.rotationClass(degrees);
