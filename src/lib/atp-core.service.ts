@@ -39,11 +39,16 @@ export class AtpCoreService {
       const x = innerRadius * Math.sin(Math.PI * 2 * (sign / timeVal));
       const y = innerRadius * Math.cos(Math.PI * 2 * (sign / timeVal));
 
-      const currentHour = type === 'minute' ? hour : sign;
-      const currentMinute = type === 'minute' ? sign : 0;
-      const time = `${currentHour}:${currentMinute} ${ampm}`;
-      const disabled = !allowedTimes.includes(time);
-
+      let disabled = false;
+      if (type === 'minute') {
+        const realHour = ampm === 'AM' && hour === 12 ? 0 : hour;
+        const time = `${realHour}:${sign} ${ampm}`;
+        disabled = !allowedTimes.includes(time);
+      } else {
+        const realHour = ampm === 'AM' && sign === 12 ? 0 : sign;
+        const allowedHours = allowedTimes.reduce((set, allowedTime) => set.add(+allowedTime.split(':')[0]), new Set());
+        disabled = !allowedHours.has(realHour);
+      }
       items.push({
         time: sign.toString(),
         left: (x + radius - fontSize) + 'px',

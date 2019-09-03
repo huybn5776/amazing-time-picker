@@ -94,6 +94,7 @@ export class TimePickerComponent implements OnInit {
         minute = (degrees / step) * this.config.minuteGap;
         minute = (minute > 59) ? minute - 60 : minute;
       }
+      hour = this.time.ampm === 'AM' && hour === 12 ? 0 : hour;
 
       const min = this.config.rangeTime.start;
       const max = this.config.rangeTime.end;
@@ -103,7 +104,7 @@ export class TimePickerComponent implements OnInit {
       const nowMinMin = +min.split(':')[1];
       const nowMaxMin = +max.split(':')[1];
 
-      const nowTime = this.getNowTime(hour, this.time.ampm, minute);
+      const nowTime = this.getTimeString(hour, minute, this.time.ampm);
       if (this.allowedTimes.includes(nowTime)) {
         this.time.hour = hour;
         this.time.minute = minute;
@@ -120,7 +121,7 @@ export class TimePickerComponent implements OnInit {
   }
 
   checkBet() {
-    const nowTime = this.getNowTime(this.time.hour, this.time.ampm, this.time.minute);
+    const nowTime = this.getTimeString(this.time.hour, this.time.minute, this.time.ampm);
     if (this.allowedTimes.indexOf(nowTime) === -1) {
       this.ParseStringToTime(this.config.rangeTime.start);
       this.setArrow();
@@ -320,9 +321,8 @@ export class TimePickerComponent implements OnInit {
     return defaults[key];
   }
 
-  private getNowTime(hour: number, ampm: 'AM' | 'PM', minute: number): string {
-    const Hour = (hour === 12 && ampm === 'AM') ? '0' : hour;
-    return Hour + ':' + minute + ' ' + ampm;
+  private getTimeString(hour: number, minute: number, ampm: 'AM' | 'PM'): string {
+    return `${hour}:${minute} ${ampm}`;
   }
 
 // tslint:disable-next-line:max-file-line-count
