@@ -6,30 +6,22 @@ import { ClockObject } from './entity/clock-object';
 @Injectable()
 export class AtpCoreService {
 
-  constructor() { }
+  public getAllowedTimes(minTime: string, maxTime: string): string[] {
+    const allowedTimes = [];
+    const nowMinHour = +minTime.split(':')[0];
+    const nowMaxHour = +maxTime.split(':')[0];
+    const nowMinMin = +minTime.split(':')[1];
+    const nowMaxMin = +maxTime.split(':')[1];
 
-  public getAllowedTimes(min: string, max: string): string[] {
-    const allTimes = [];
-    const nowMinHour = +min.split(':')[0];
-    const nowMaxHour = +max.split(':')[0];
-    const nowMinMin = +min.split(':')[1];
-    const nowMaxMin = +max.split(':')[1];
-    for (let i = nowMinHour; i <= nowMaxHour; i++) {
-      let j = 0,
-        jDest = 59;
-      if (i === nowMinHour) {
-        j = nowMinMin;
-      } else if (i === nowMaxHour) {
-        jDest = nowMaxMin;
-      }
-      for (j; j <= jDest; j++) {
-        const hour = i <= 12 ? i : i - 12;
-        const minute = j;
-        const ampm = i < 12 ? 'AM' : 'PM';
-        allTimes.push(hour + ':' + minute + ' ' + ampm);
+    for (let hour = nowMinHour; hour <= nowMaxHour; hour++) {
+      const minuteFrom = hour === nowMinHour ? nowMinMin : 0;
+      const minuteTo = hour === nowMaxHour ? nowMaxMin : 59;
+      for (let minute = minuteFrom; minute <= minuteTo; minute++) {
+        const ampm = hour < 12 ? 'AM' : 'PM';
+        allowedTimes.push((hour <= 12 ? hour : hour - 12) + ':' + minute + ' ' + ampm);
       }
     }
-    return allTimes;
+    return allowedTimes;
   }
 
   public clockMaker(type: 'minute' | 'hour'): ClockObject[] {
@@ -37,22 +29,20 @@ export class AtpCoreService {
     const timeVal = (type === 'minute') ? 60 : 12;
     const timeStep = (type === 'minute') ? 5 : 1;
     const timeStart = (type === 'minute') ? 0 : 1;
-    const r = 124;
-    const j = r - 25;
+    const radius = 124;
+    const innerRadius = radius - 25;
+    const fontSize = 17;
 
-    for (let min = timeStart; min <= timeVal; min += timeStep) {
-      if (min !== 60) {
-        const str = String(min);
-        const x = j * Math.sin(Math.PI * 2 * (min / timeVal));
-        const y = j * Math.cos(Math.PI * 2 * (min / timeVal));
+    for (let sign = timeStart; sign <= timeVal && sign !== 60; sign += timeStep) {
+      const x = innerRadius * Math.sin(Math.PI * 2 * (sign / timeVal));
+      const y = innerRadius * Math.cos(Math.PI * 2 * (sign / timeVal));
 
-        items.push({
-          time: str,
-          left: (x + r - 17) + 'px',
-          top: (-y + r - 17) + 'px',
-          type
-        });
-      }
+      items.push({
+        time: sign.toString(),
+        left: (x + radius - fontSize) + 'px',
+        top: (-y + radius - fontSize) + 'px',
+        type,
+      });
     }
     return items;
   }
