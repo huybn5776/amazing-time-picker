@@ -3,4 +3,5 @@ export class ClockObject {
   left: string;
   top: string;
   type: 'minute' | 'hour';
+  disabled?: boolean;
 }

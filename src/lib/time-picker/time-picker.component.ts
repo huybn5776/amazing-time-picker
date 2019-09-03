@@ -50,7 +50,7 @@ export class TimePickerComponent implements OnInit {
 
   clockMaker() {
     const type = this.clockType;
-    this.clockObject = this.core.clockMaker(type);
+    this.clockObject = this.core.clockMaker(type, this.getHour(), this.time.ampm, this.allowedTimes);
     this.setArrow();
   }
 
@@ -126,17 +126,6 @@ export class TimePickerComponent implements OnInit {
       this.setArrow();
       this.setActiveTime();
     }
-  }
-
-  /**
-   * Check if clock button time is not in allowed times and disabled
-   * @param t Button Time Value
-   */
-  checkDisabled(t) {
-    const m = (this.clockType === 'minute') ? t : this.time.minute;
-    const h = (this.clockType === 'hour') ? t : this.time.hour;
-    const nowTime = this.getNowTime(h, this.time.ampm, m);
-    return (this.allowedTimes.indexOf(nowTime) === -1);
   }
 
   modalAnimation() {

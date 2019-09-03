@@ -24,7 +24,7 @@ export class AtpCoreService {
     return allowedTimes;
   }
 
-  public clockMaker(type: 'minute' | 'hour'): ClockObject[] {
+  public clockMaker(type: 'minute' | 'hour', hour: number, ampm: 'AM' | 'PM', allowedTimes: string[]): ClockObject[] {
     const items: ClockObject[] = [];
     const timeVal = (type === 'minute') ? 60 : 12;
     const timeStep = (type === 'minute') ? 5 : 1;
@@ -37,11 +37,17 @@ export class AtpCoreService {
       const x = innerRadius * Math.sin(Math.PI * 2 * (sign / timeVal));
       const y = innerRadius * Math.cos(Math.PI * 2 * (sign / timeVal));
 
+      const currentHour = type === 'minute' ? hour : sign;
+      const currentMinute = type === 'minute' ? sign : 0;
+      const time = `${currentHour}:${currentMinute} ${ampm}`;
+      const disabled = !allowedTimes.includes(time);
+
       items.push({
         time: sign.toString(),
         left: (x + radius - fontSize) + 'px',
         top: (-y + radius - fontSize) + 'px',
         type,
+        disabled,
       });
     }
     return items;
