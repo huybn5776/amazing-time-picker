@@ -34,6 +34,7 @@ export class AmazingTimePickerService {
       onlyMinute: config.onlyMinute,
       onlyAM: config.onlyAM,
       onlyPM: config.onlyPM,
+      only12h: config.only12h,
       closeWhenSelected: config.closeWhenSelected,
     } as TimePickerConfig;
     config.rangeTime = {

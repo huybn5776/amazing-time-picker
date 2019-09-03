@@ -10,12 +10,15 @@
              [attr.disabled]="(config.onlyHour) ? 'disabled' : null"
              [ngClass]="{'selected' : clockType == 'minute'}">{{getMinute()}}</div>
       </div>
-      <div class="time-picker-selected-ampm">
-        <div class="time-picker-am" (click)="setAM()" [attr.disabled]="(config.onlyPM) ? 'disabled' : null"
-             [ngClass]="{'selected' : time.ampm == 'AM'}">{{getPeriod('AM')}}</div>
-        <div class="time-picker-pm" (click)="setPM()" [attr.disabled]="(config.onlyAM) ? 'disabled' : null"
-             [ngClass]="{'selected' : time.ampm == 'PM'}">{{getPeriod('PM')}}</div>
-
+      <div class="time-picker-selected-ampm" *ngIf="!config.only12h">
+        <div class="time-picker-am" (click)="setAM()"
+             [attr.disabled]="(config.onlyPM) ? 'disabled' : null"
+             [ngClass]="{'selected' : time.ampm == 'AM'}">{{getPeriod('AM')}}
+        </div>
+        <div class="time-picker-pm" (click)="setPM()"
+             [attr.disabled]="(config.onlyAM) ? 'disabled' : null"
+             [ngClass]="{'selected' : time.ampm == 'PM'}">{{getPeriod('PM')}}
+        </div>
       </div>
     </div>
     <div class="time-picker-content">

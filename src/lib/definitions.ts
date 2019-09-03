@@ -21,6 +21,7 @@ export interface TimePickerConfig {
   onlyMinute?: boolean;
   onlyAM?: boolean;
   onlyPM?: boolean;
+  only12h?: boolean;
   closeWhenSelected?: boolean;
 }
 
