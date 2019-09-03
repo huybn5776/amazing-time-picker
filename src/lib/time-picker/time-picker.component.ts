@@ -135,7 +135,7 @@ export class TimePickerComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.allowedTimes = this.core.getAllowedTimes(this.config.rangeTime.start, this.config.rangeTime.end);
+    this.allowedTimes = this.core.getAllowedTimes(this.config);
     if (this.config && this.config.onlyMinute) {
       this.clockType = 'minute';
     }

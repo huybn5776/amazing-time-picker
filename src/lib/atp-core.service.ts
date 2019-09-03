@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 
-import { ITime } from './definitions';
+import { ITime, TimePickerConfig } from './definitions';
 import { ClockObject } from './entity/clock-object';
 
 @Injectable()
 export class AtpCoreService {
 
-  public getAllowedTimes(minTime: string, maxTime: string): string[] {
+  public getAllowedTimes(config: TimePickerConfig): string[] {
+    const minTime = config.rangeTime.start;
+    const maxTime = config.rangeTime.end;
     const allowedTimes = [];
     const nowMinHour = +minTime.split(':')[0];
     const nowMaxHour = +maxTime.split(':')[0];
@@ -16,7 +18,7 @@ export class AtpCoreService {
     for (let hour = nowMinHour; hour <= nowMaxHour; hour++) {
       const minuteFrom = hour === nowMinHour ? nowMinMin : 0;
       const minuteTo = hour === nowMaxHour ? nowMaxMin : 59;
-      for (let minute = minuteFrom; minute <= minuteTo; minute++) {
+      for (let minute = minuteFrom; minute <= minuteTo; minute += config.minuteGap) {
         const ampm = hour < 12 ? 'AM' : 'PM';
         allowedTimes.push((hour <= 12 ? hour : hour - 12) + ':' + minute + ' ' + ampm);
       }
