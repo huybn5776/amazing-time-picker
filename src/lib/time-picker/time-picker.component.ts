@@ -219,6 +219,11 @@ export class TimePickerComponent implements OnInit {
     if (event && event.target !== event.currentTarget) {
       return;
     }
+    this.closePopup();
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  closePopup() {
     if (this.isPopup) {
       this.activeModal = false;
       setTimeout(() => {
