@@ -64,6 +64,7 @@ export interface IDisplayPreference {
 
 export interface ITime {
   minute: number;
-  hour: number;
+  hour: number; // 1 ~ 12
   ampm: 'AM' | 'PM';
+  time?: string; // 00:00 ~ 23:59
 }

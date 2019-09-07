@@ -60,31 +60,34 @@ export class AtpCoreService {
     return items;
   }
 
-  public timeToString(time: ITime): string {
-    const {ampm, minute, hour} = time;
-    let hh = ampm === 'PM' ? +hour + 12 : +hour;
-    if (ampm === 'AM' && hh === 12) {
-      hh = 0;
-    }
-    if (hh === 24) {
-      hh = 12;
-    }
-    const hhStr = hh.toString().padStart(2, '0');
-    const mmStr = minute.toString().padStart(2, '0');
-    return `${hhStr}:${mmStr}`;
-  }
 
   /**
    * Converts 00:00 format to ITime object
    */
   public stringToTime(time: string): ITime {
-    const [h, m] = time.split(':');
-    let hour = +h > 12 ? +h - 12 : +h;
-    hour = hour === 0 ? 12 : hour;
-    const ampm = +h >= 12 ? 'PM' : 'AM';
-    return {
-      ampm, minute: +m, hour
+    const match = /(\d+)\s*:\s*(\d+)/g.exec(time);
+    if (!(match && match[1] && match[2])) {
+      return null;
+    }
+    let hour: number;
+    let minute: number;
+    hour = +match[1];
+    minute = +match[2];
+    hour = Math.min(23, hour);
+    minute = Math.min(59, minute);
+    const ampm = hour >= 12 || time.trim().toLowerCase().endsWith('pm') ? 'PM' : 'AM';
+    const timeObject: ITime = {
+      hour: hour === 12 ? 12 : hour % 12,
+      minute,
+      ampm
     };
+    timeObject.time = this.timeToString(timeObject);
+    return timeObject;
+  }
+
+  public timeToString(timeObject: ITime) {
+    const hour = timeObject.hour + (timeObject.ampm === 'PM' ? 12 : 0);
+    return `${hour.toString().padStart(2, '0')}:${timeObject.minute.toString().padStart(2, '0')}`;
   }
 
   /**

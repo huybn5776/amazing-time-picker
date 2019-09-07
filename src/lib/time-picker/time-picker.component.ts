@@ -1,4 +1,4 @@
-import { ApplicationRef, Component, ComponentRef, OnInit } from '@angular/core';
+import { ApplicationRef, Component, ComponentRef, HostListener, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 
 import { IClockNumber, IDisplayPreference, ITime, TimePickerConfig } from '../definitions';
@@ -21,7 +21,8 @@ export class TimePickerComponent implements OnInit {
   public time: ITime = {
     ampm: 'AM',
     minute: 0,
-    hour: 12
+    hour: 12,
+    time: '12:00',
   };
   public nowTime: number = this.time.hour;
   public degree: number;
@@ -41,11 +42,6 @@ export class TimePickerComponent implements OnInit {
   public ParseStringToTime(time: string): void {
     const newTime = (time === '' || time === undefined || time === null) ? this.time.hour + ':' + this.time.minute : time;
     this.time = this.core.stringToTime(newTime);
-  }
-
-  public getTime() {
-    const time = this.core.timeToString(this.time);
-    this.valueChange.next(time);
   }
 
   clockMaker() {
@@ -211,7 +207,8 @@ export class TimePickerComponent implements OnInit {
   }
 
   getTimeAndClose(event?: MouseEvent) {
-    this.getTime();
+    this.time.time = this.core.timeToString(this.time);
+    this.valueChange.next(this.time.time);
     this.close(event);
   }
 

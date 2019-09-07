@@ -2,7 +2,8 @@ import { Directive, HostListener, ElementRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { AmazingTimePickerService } from './atp-time-picker.service';
-import { IDisplayPreference, Pallete, RangeTime, TimePickerConfig } from './definitions';
+import { IDisplayPreference, ITime, Pallete, RangeTime, TimePickerConfig } from './definitions';
+import { AtpCoreService } from './atp-core.service';
 
 @Directive({
   selector: 'input[amzTimePicker]',
@@ -31,10 +32,14 @@ export class AtpDirective implements ControlValueAccessor {
   @Input() onlyPM: boolean;
   @Input() only12h: boolean;
   @Input() closeWhenSelected: boolean;
+  @Input() displayIn24h: boolean;
+
+  timeObject: ITime;
 
   constructor(
     private readonly elementRef: ElementRef,
-    private readonly atp: AmazingTimePickerService,
+    private readonly timePickerService: AmazingTimePickerService,
+    private readonly coreService: AtpCoreService,
   ) { }
 
   @HostListener('click')
@@ -56,30 +61,52 @@ export class AtpDirective implements ControlValueAccessor {
       closeWhenSelected: this.closeWhenSelected,
       preference: this.preference,
     };
-    this.atp.open(config)
+    this.timePickerService.open(config)
       .afterClose()
       .subscribe(retTime => {
-        this.writeValue(retTime); // update the native element
+        this.writeValue(retTime);
         this.onChange(retTime); // update the form value (if there's a form)
       });
   }
 
-  @HostListener('input', ['$event'])
-  onInput(event) {
-    this.onChange(event.target.value);
+  @HostListener('input')
+  onInput() {
+    this.resolveTime(this.elementRef.nativeElement.value);
   }
 
-  writeValue(value: any) {
+  writeValue(value: string) {
+    this.resolveTime(value);
     if (this.elementRef) {
-      this.elementRef.nativeElement.value = value;
+      this.elementRef.nativeElement.value = this.getDisplayTime(this.timeObject);
     }
   }
 
-  registerOnChange(fn: any) {
+  registerOnChange(fn) {
     this.onChange = fn;
   }
 
   registerOnTouched(fn) { }
+
+  private resolveTime(value: string) {
+    const timeObject = this.coreService.stringToTime(value);
+    if (timeObject) {
+      this.timeObject = timeObject;
+      this.onChange(timeObject.time);
+    }
+  }
+
+  private getDisplayTime(timeObject: ITime) {
+    let displayHour = timeObject.hour;
+    let suffix: string;
+    if (this.displayIn24h) {
+      displayHour += timeObject.ampm === 'PM' ? 12 : 0;
+    } else if (!this.only12h) {
+      suffix = timeObject.ampm;
+    }
+    const hourStr = displayHour.toString().padStart(2, '0');
+    const minuteStr = timeObject.minute.toString().padStart(2, '0');
+    return `${hourStr}:${minuteStr}` + (suffix ? ' ' + suffix : '');
+  }
 
   private onChange = (_): void => {};
 }
