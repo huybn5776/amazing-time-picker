@@ -1,7 +1,7 @@
 import { ApplicationRef, Component, ComponentRef, HostListener, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 
-import { IClockNumber, IDisplayPreference, ITime, TimePickerConfig } from '../definitions';
+import { IClockNumber, IDisplayPreference, TimeObject, TimePickerConfig } from '../definitions';
 import { AtpCoreService } from '../atp-core.service';
 import { ClockObject } from '../entity/clock-object';
 
@@ -18,13 +18,13 @@ export class TimePickerComponent implements OnInit {
   public clockObject: ClockObject[];
   public isClicked: boolean;
   public clockType: 'minute' | 'hour' = 'hour';
-  public time: ITime = {
+  public timeObject: TimeObject = {
     ampm: 'AM',
     minute: 0,
     hour: 12,
     time: '12:00',
   };
-  public nowTime: number = this.time.hour;
+  public nowTime: number = this.timeObject.hour;
   public degree: number;
   public config: TimePickerConfig;
   public appRef: ApplicationRef;
@@ -40,23 +40,23 @@ export class TimePickerComponent implements OnInit {
   ) { }
 
   public ParseStringToTime(time: string): void {
-    const newTime = (time === '' || time === undefined || time === null) ? this.time.hour + ':' + this.time.minute : time;
-    this.time = this.core.stringToTime(newTime);
+    const newTime = (time === '' || time === undefined || time === null) ? this.timeObject.hour + ':' + this.timeObject.minute : time;
+    this.timeObject = this.core.stringToTime(newTime);
   }
 
   clockMaker() {
     const type = this.clockType;
-    this.clockObject = this.core.clockMaker(type, this.getHour(), this.time.ampm, this.allowedTimes);
+    this.clockObject = this.core.clockMaker(type, this.getHour(), this.timeObject.ampm, this.allowedTimes);
     this.setArrow();
   }
 
   setActiveTime() {
-    this.nowTime = (this.clockType === 'minute' ? this.time.minute : this.time.hour);
+    this.nowTime = (this.clockType === 'minute' ? this.timeObject.minute : this.timeObject.hour);
   }
 
   setArrow() {
     const step = (this.clockType === 'minute') ? 6 : 30;
-    const time = (this.clockType === 'minute') ? this.time.minute : this.time.hour;
+    const time = (this.clockType === 'minute') ? this.timeObject.minute : this.timeObject.hour;
     const degrees = time * step;
     this.rotationClass(degrees);
     this.setActiveTime();
@@ -80,8 +80,8 @@ export class TimePickerComponent implements OnInit {
     const parentRect = (<HTMLElement> event.currentTarget).getBoundingClientRect();
     if (this.isClicked && (event.currentTarget === event.target || (<HTMLElement> event.target).nodeName === 'BUTTON')) {
       const degrees = this.core.calcDegrees(event, parentRect, step);
-      let hour = this.time.hour;
-      let minute = this.time.minute;
+      let hour = this.timeObject.hour;
+      let minute = this.timeObject.minute;
 
       if (this.clockType === 'hour') {
         hour = (degrees / step);
@@ -90,7 +90,7 @@ export class TimePickerComponent implements OnInit {
         minute = (degrees / step) * this.config.minuteGap;
         minute = (minute > 59) ? minute - 60 : minute;
       }
-      hour = this.time.ampm === 'AM' && hour === 12 ? 0 : hour;
+      hour = this.timeObject.ampm === 'AM' && hour === 12 ? 0 : hour;
 
       const min = this.config.rangeTime.start;
       const max = this.config.rangeTime.end;
@@ -100,24 +100,24 @@ export class TimePickerComponent implements OnInit {
       const nowMinMin = +min.split(':')[1];
       const nowMaxMin = +max.split(':')[1];
 
-      const nowTime = this.getTimeString(hour, minute, this.time.ampm);
+      const nowTime = this.getTimeString(hour, minute, this.timeObject.ampm);
       if (this.allowedTimes.includes(nowTime)) {
-        this.time.hour = hour;
-        this.time.minute = minute;
+        this.timeObject.hour = hour;
+        this.timeObject.minute = minute;
         this.rotationClass(degrees);
         this.setActiveTime();
       } else if (this.clockType === 'hour' && (hour === nowMinHour && minute <= nowMinMin)) {
-        this.time.hour = nowMinHour;
-        this.time.minute = nowMinMin;
+        this.timeObject.hour = nowMinHour;
+        this.timeObject.minute = nowMinMin;
       } else if (this.clockType === 'hour' && (hour === nowMaxHour && minute >= nowMaxMin)) {
-        this.time.hour = nowMaxHour;
-        this.time.minute = nowMaxMin;
+        this.timeObject.hour = nowMaxHour;
+        this.timeObject.minute = nowMaxMin;
       }
     }
   }
 
   checkBet() {
-    const nowTime = this.getTimeString(this.time.hour, this.time.minute, this.time.ampm);
+    const nowTime = this.getTimeString(this.timeObject.hour, this.timeObject.minute, this.timeObject.ampm);
     if (this.allowedTimes.indexOf(nowTime) === -1) {
       this.ParseStringToTime(this.config.rangeTime.start);
       this.setArrow();
@@ -138,9 +138,9 @@ export class TimePickerComponent implements OnInit {
     }
     if (this.config) {
       if (this.config.onlyPM) {
-        this.time.ampm = 'PM';
+        this.timeObject.ampm = 'PM';
       } else if (this.config.onlyAM) {
-        this.time.ampm = 'AM';
+        this.timeObject.ampm = 'AM';
       }
     }
     this.clockMaker();
@@ -194,7 +194,7 @@ export class TimePickerComponent implements OnInit {
     if (this.config && this.config.onlyPM) {
       return false;
     }
-    this.time.ampm = 'AM';
+    this.timeObject.ampm = 'AM';
     this.checkBet();
   }
 
@@ -202,13 +202,13 @@ export class TimePickerComponent implements OnInit {
     if (this.config && this.config.onlyAM) {
       return false;
     }
-    this.time.ampm = 'PM';
+    this.timeObject.ampm = 'PM';
     this.checkBet();
   }
 
   getTimeAndClose(event?: MouseEvent) {
-    this.time.time = this.core.timeToString(this.time);
-    this.valueChange.next(this.time.time);
+    this.timeObject.time = this.core.timeToString(this.timeObject);
+    this.valueChange.next(this.timeObject.time);
     this.close(event);
   }
 
@@ -280,9 +280,9 @@ export class TimePickerComponent implements OnInit {
 
   public getMinute() {
     if (this.preference && this.preference.minute) {
-      return this.preference.minute(this.time.minute);
+      return this.preference.minute(this.timeObject.minute);
     }
-    let min: string = this.time.minute.toString();
+    let min: string = this.timeObject.minute.toString();
     if (+min < 10) {
       min = '0' + min;
     }
@@ -291,9 +291,9 @@ export class TimePickerComponent implements OnInit {
 
   public getHour() {
     if (this.preference && this.preference.hour) {
-      return this.preference.hour(this.time.hour);
+      return this.preference.hour(this.timeObject.hour);
     }
-    return this.time.hour;
+    return this.timeObject.hour;
   }
 
   public getClockTime(clock: IClockNumber) {

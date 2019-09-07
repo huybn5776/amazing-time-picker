@@ -62,7 +62,7 @@ export interface IDisplayPreference {
   clockHour?(hour: any);
 }
 
-export interface ITime {
+export interface TimeObject {
   minute: number;
   hour: number; // 1 ~ 12
   ampm: 'AM' | 'PM';

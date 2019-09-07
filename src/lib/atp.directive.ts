@@ -2,7 +2,7 @@ import { Directive, HostListener, ElementRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { AmazingTimePickerService } from './atp-time-picker.service';
-import { IDisplayPreference, ITime, Pallete, RangeTime, TimePickerConfig } from './definitions';
+import { IDisplayPreference, TimeObject, Pallete, RangeTime, TimePickerConfig } from './definitions';
 import { AtpCoreService } from './atp-core.service';
 
 @Directive({
@@ -34,7 +34,7 @@ export class AtpDirective implements ControlValueAccessor {
   @Input() closeWhenSelected: boolean;
   @Input() displayIn24h: boolean;
 
-  timeObject: ITime;
+  timeObject: TimeObject;
 
   constructor(
     private readonly elementRef: ElementRef,
@@ -95,7 +95,7 @@ export class AtpDirective implements ControlValueAccessor {
     }
   }
 
-  private getDisplayTime(timeObject: ITime) {
+  private getDisplayTime(timeObject: TimeObject) {
     let displayHour = timeObject.hour;
     let suffix: string;
     if (this.displayIn24h) {

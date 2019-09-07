@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { ITime, TimePickerConfig } from './definitions';
+import { TimeObject, TimePickerConfig } from './definitions';
 import { ClockObject } from './entity/clock-object';
 
 @Injectable()
@@ -62,9 +62,9 @@ export class AtpCoreService {
 
 
   /**
-   * Converts 00:00 format to ITime object
+   * Converts 00:00 format to TimeObject object
    */
-  public stringToTime(time: string): ITime {
+  public stringToTime(time: string): TimeObject {
     const match = /(\d+)\s*:\s*(\d+)/g.exec(time);
     if (!(match && match[1] && match[2])) {
       return null;
@@ -76,7 +76,7 @@ export class AtpCoreService {
     hour = Math.min(23, hour);
     minute = Math.min(59, minute);
     const ampm = hour >= 12 || time.trim().toLowerCase().endsWith('pm') ? 'PM' : 'AM';
-    const timeObject: ITime = {
+    const timeObject: TimeObject = {
       hour: hour === 12 ? 12 : hour % 12,
       minute,
       ampm
@@ -85,7 +85,7 @@ export class AtpCoreService {
     return timeObject;
   }
 
-  public timeToString(timeObject: ITime) {
+  public timeToString(timeObject: TimeObject) {
     const hour = timeObject.hour + (timeObject.ampm === 'PM' ? 12 : 0);
     return `${hour.toString().padStart(2, '0')}:${timeObject.minute.toString().padStart(2, '0')}`;
   }
