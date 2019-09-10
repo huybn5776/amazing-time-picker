@@ -23,8 +23,11 @@
     </div>
     <div class="time-picker-content">
       <div class="time-picker-clock" [ngClass]="{'hide-time-picker-clock': changeToMin}"
-           (mousemove)="getDegree($event)" (mousedown)="updateClockDown($event)" (mouseup)="onTimeSelect()">
-        <button *ngFor="let clock of clockObject" [ngClass]="{'active' : nowTime == clock.time}"
+           (mousemove)="getDegree($event)" (mousedown)="updateClockDown($event)" (mouseup)="onTimeSelect()"
+           (touchmove)="getDegree($event)" (touchstart)="updateClockDown($event)" (touchend)="onTimeSelect()"
+      >
+        <button *ngFor="let clock of clockObject"
+                [ngClass]="{'active' : nowTime == clock.time || nowTime === 0 && clock.time == 12}"
                 [disabled]="clock.disabled"
                 [ngStyle]="{top: clock.top,left: clock.left, color: nowTime == clock.time ? config.arrowStyle.color :  '',
                 background: nowTime == clock.time || nowTime === 0 && clock.time == 12 ? config.arrowStyle.background : 'transparent'}">

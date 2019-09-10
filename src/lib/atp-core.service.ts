@@ -93,15 +93,15 @@ export class AtpCoreService {
   /**
    * @experimental
    */
-  public calcDegrees(event: MouseEvent, parentRect: ClientRect, step: number): number {
+  public calcDegrees(currentTarget: HTMLElement, x: number, y: number, parentRect: ClientRect, step: number): number {
     const clock = {
-      width: (<HTMLElement> event.currentTarget).offsetWidth,
-      height: (<HTMLElement> event.currentTarget).offsetHeight,
+      width: currentTarget.offsetWidth,
+      height: currentTarget.offsetHeight,
     };
     const targetX = clock.width / 2;
     const targetY = clock.height / 2;
-    const Vx = Math.round((event.clientX - parentRect.left) - targetX);
-    const Vy = Math.round(targetY - (event.clientY - parentRect.top));
+    const Vx = Math.round((x - parentRect.left) - targetX);
+    const Vy = Math.round(targetY - (y - parentRect.top));
     let radians = -Math.atan2(Vy, Vx);
     radians += 2.5 * Math.PI;
 

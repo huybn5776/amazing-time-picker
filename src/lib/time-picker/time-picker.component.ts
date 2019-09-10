@@ -75,11 +75,13 @@ export class TimePickerComponent implements OnInit {
     }
   }
 
-  getDegree(event: MouseEvent) {
+  getDegree(event: MouseEvent | TouchEvent) {
     const step = this.clockType === 'minute' ? 6 * this.config.minuteGap : 30;
     const parentRect = (<HTMLElement> event.currentTarget).getBoundingClientRect();
     if (this.isClicked && (event.currentTarget === event.target || (<HTMLElement> event.target).nodeName === 'BUTTON')) {
-      const degrees = this.core.calcDegrees(event, parentRect, step);
+      const x = event instanceof MouseEvent ? event.clientX : event.changedTouches[0].clientX;
+      const y = event instanceof MouseEvent ? event.clientY : event.changedTouches[0].clientY;
+      const degrees = this.core.calcDegrees(<HTMLElement> event.currentTarget, x, y, parentRect, step);
       let hour = this.timeObject.hour;
       let minute = this.timeObject.minute;
 
@@ -258,7 +260,7 @@ export class TimePickerComponent implements OnInit {
    * Event on clock mouse click down
    * @param event - captured event
    */
-  updateClockDown(event: MouseEvent) {
+  updateClockDown(event: MouseEvent | TouchEvent) {
     this.isClicked = true;
     this.animationTime = 0;
     this.getDegree(event);
